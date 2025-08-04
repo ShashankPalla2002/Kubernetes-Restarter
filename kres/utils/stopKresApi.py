@@ -3,20 +3,32 @@ import json
 import signal
 from pathlib import Path
 
+from kres.utils.logger import Logger
+
 class StopKresApi:
-    def __init__(self):
-        self.kresDdir = Path.home() / ".kres" / "init"
+    def __init__(self, log:str = "INFO") -> None:
+        self.logger      = Logger(log)
+        self.kresDdir    = Path.home() / ".kres" / "init"
         self.kresApiFile = self.kresDdir / "kresApi.json"
+
+        self.logger.debug(f"Looking for Kres API metadata at {self.kresApiFile}")
 
         try:
             with open(self.kresApiFile, "r") as f:
                 self.kresApiData = json.load(f)
-        except FileNotFoundError:
-            raise FileNotFoundError("Kres API configuration file not found. Please run 'kres init' to set up the Kres API server.")
+                self.logger.debug("Successfully loaded kresApi.json")
+        except FileNotFoundError as e:
+            self.logger.error(f"Kres API configuration file not found. Please run 'kres init' to set up the Kres API server. {e}")
+            return
 
-    def stop(self):
+    def stop(self) -> None:
+        pid = self.kresApiData.get('pid')
         try:
-            os.kill(self.kresApiData['pid'], signal.SIGTERM)
-            print(f"Kres API process (PID {self.kresApiData['pid']}) terminated.")
-        except ProcessLookupError:
-            print("Process already exited.")
+            self.logger.debug(f"Attempting to stop process with PID: {pid}")
+            os.kill(pid, signal.SIGTERM)
+            self.logger.info(f"Kres API process (PID {pid}) terminated successfully.")
+        except ProcessLookupError as p:
+            self.logger.warning(f"Kres API process (PID {pid}) was not running. {p}")
+        except Exception as e:
+            self.logger.error(f"Failed to terminate Kres API process (PID {pid}): {e}")
+            return

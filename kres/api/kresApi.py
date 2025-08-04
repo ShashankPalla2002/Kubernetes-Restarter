@@ -24,7 +24,7 @@ if __name__ == "__main__":
     port       = int(sys.argv[1])
 
     tokenEncryption = TokenEncryption()
-    encryptedToken = tokenEncryption.login(paraphrase, token)
+    encryptedToken  = tokenEncryption.login(paraphrase, token)
 
     kresApi = setupRoutes()
     uvicorn.run(app=kresApi, host="127.0.0.1", port=5454)
