@@ -1,35 +1,31 @@
-from kres.subparsers.initParser import InitParser
-from kres.subparsers.logoutParser import LogOutParser
-from kres.subparsers.apiParser import APIParser
-from kres.subparsers.accessParser import AccessParser
+from kres.subparsers.initParser    import InitParser
+from kres.subparsers.logoutParser  import LogOutParser
+from kres.subparsers.apiParser     import APIParser
+from kres.subparsers.accessParser  import AccessParser
 from kres.subparsers.restartParser import RestartParser
-from kres.utils.parser import Parser
+from kres.utils.parser             import Parser
+
+class KresCLI:
+    def __init__(self):
+        self.parser = Parser()
+        self.args   = self.parser.parse()
+
+    def run(self):
+        if self.args.command == 'init':
+            InitParser(self.args).execute()
+
+        elif self.args.command == 'logout':
+            LogOutParser(self.args).execute()
+
+        elif self.args.command == 'api':
+            APIParser(self.args).execute()
+
+        elif self.args.command == 'access':
+            AccessParser(self.args).execute()
+            
+        elif self.args.command == 'restart':
+            if self.parser.validateRestartParser(self.args):
+                RestartParser(self.args).execute()
 
 def main():
-    args = Parser().parse()
-
-    if args.command == 'init':
-        initParser = InitParser()
-        initParser.execute(args)
-
-    elif args.command == 'logout':
-        logOutParser = LogOutParser()
-        logOutParser.execute(args)
-
-    elif args.command == 'api':
-        apiParser = APIParser()
-        apiParser.execute(args)
-
-    elif args.command == 'access':
-        accessParser = AccessParser()
-        accessParser.execute(args)
-
-    elif args.command == 'restart':
-        print("Restarting resource...")
-        restartParser = RestartParser()
-        if Parser().validateRestartParser(args):
-            restartParser.execute(args)
-
-
-if __name__ == "__main__":
-    main()
+    KresCLI().run()

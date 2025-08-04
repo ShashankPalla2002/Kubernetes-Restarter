@@ -1,16 +1,19 @@
-from kres.utils.checkKresApiStatus import CheckKresApiStatus
+from kres.utils.logger      import Logger
 from kres.utils.stopKresApi import StopKresApi
-from kres.utils.deleteDir import DeleteDir
+from kres.utils.deleteDir   import DeleteDir
 
 class LogOutParser:
-    def __init__(self):
-        if not CheckKresApiStatus().isKresApiRunning():
-            print("Kres API is not running. Please login first.")
-            return
+    def __init__(self, args) -> None:
+        self.args   = args
+        self.logger = Logger(args.log)
 
-        self.stopKresApi = StopKresApi()
-        self.deleteDir = DeleteDir("init")
+        self.logger.debug(f"LogoutParser initialized with args: {self.args}")
 
-    def execute(self, args):
+        self.stopKresApi = StopKresApi(log=args.log)
+        self.deleteDir   = DeleteDir("init", log=args.log)
+
+    def execute(self) -> None:
+        self.logger.info("Logging out from kres...")
+        
         self.stopKresApi.stop()
         self.deleteDir.delete()
