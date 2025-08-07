@@ -10,7 +10,7 @@ class ReadMemory:
         self.kresApiFile = self.kresDir / "kresApi.json"
 
     def readJson(self) -> dict:
-        self.logger.debug(f"Attempting to read Kres config from: {self.kresDir / "kc.json"}")
+        self.logger.debug(f"Attempting to read Kres config from: {self.kresDir / 'kc.json'}")
 
         try:
             with open(self.kresDir / "kc.json", "r") as f:

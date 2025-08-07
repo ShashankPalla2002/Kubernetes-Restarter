@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name        = "kres"
-version     = "1.0.0"
+version     = "1.0.1"
 description = "Kubernetes Resource Restarter"
 authors     = [
     { name = "Shashank Palla", email = "shashankpalla44@gmail.com" }
